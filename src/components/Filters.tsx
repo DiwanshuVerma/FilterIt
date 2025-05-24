@@ -52,8 +52,8 @@ const Filters = () => {
 
 
     return (
-        <section className="max-w-72 px-4 mt-6">
-            <h1 className="text-3xl font-semibold mb-4">FilterIt</h1>
+        <section className="w-64 sm:w-72 px-4 mt-6">
+            <h1 className="text-xl sm:text-3xl font-semibold mb-4">FilterIt</h1>
 
             <form
             onReset={() => setSearchInput("")}
@@ -80,11 +80,11 @@ const Filters = () => {
 
                 {/* --------------> Categories <--------------- */}
                 <div>
-                    <h2 className="text-lg mb-2 font-medium">Categories</h2>
+                    <h2 className="text-base sm:text-lg mb-2 font-medium">Categories</h2>
                     <div className="flex flex-col ">
                         {categories.map(category => {
                             return (
-                                <div key={category} className="space-x-2 space-y-3 uppercase text-sm text-neutral-800" >
+                                <div key={category} className="space-x-2 space-y-3 text-nowrap uppercase text-[12px] sm:text-sm text-neutral-800" >
                                     <input id={category} type="radio" name="cat" onChange={(e) => setSelectedCategory(e.target.value)} value={category} />
                                     <label htmlFor={category}>{category}</label>
                                 </div>
@@ -95,12 +95,12 @@ const Filters = () => {
 
                 {/* ---------------> Keywords <-------------------- */}
                 <div className="text-left">
-                    <h2 className="text-lg mb-2">Keywords</h2>
+                    <h2 className="text-base sm:text-lg  mb-2">Keywords</h2>
                     <div className="flex flex-col gap-1 text-left">
                         {keywords.map(keyword => (
                             <button
                                 type="button"
-                                className={`flex justify-between border border-neutral-200 text-left px-2 py-1 rounded  text-neutral-800
+                                className={`flex  text-[12px] sm:text-sm justify-between border border-neutral-200 text-left px-2 py-1 rounded  text-neutral-800
                                 ${selectedKeyword.some(selected => selected === keyword) ? 'bg-gray-300' : 'bg-white'}`}
                                 onClick={() => handleKeywordSelect(keyword)}
                                 key={keyword}

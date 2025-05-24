@@ -9,9 +9,12 @@ function App() {
   return (
     <BrowserRouter>
       <ProductsProvider >
-        <div className="flex gap-4">
+        <div className="flex gap-4 h-screen overflow-hidden">
           <Filters />
-          <Products />
+
+          <div className="h-full overflow-y-auto">
+            <Products />
+          </div>
         </div>
       </ProductsProvider>
     </BrowserRouter>

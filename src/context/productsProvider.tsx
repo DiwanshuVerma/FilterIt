@@ -23,12 +23,12 @@ export const ProductsProvider = ({ children }: { children: ReactNode }) => {
 
     const [selectedCategory, setSelectedCategory] = useState<string>("")
 
-    const [selectedKeyword, setSelectedKeyword] = useState<string[]>([])
-
+    
     const [searchInput, setSearchInput] = useState<string>("")
     const [minVal, setMinVal] = useState<number>(0)
     const [maxVal, setMaxVal] = useState<number>(0)
-
+    
+    const [selectedKeyword, setSelectedKeyword] = useState<string[]>([])
     const [keywords] = useState([
         "Apple",
         "Watch",

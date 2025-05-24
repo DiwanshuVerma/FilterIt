@@ -7,82 +7,76 @@ interface PaginationProps {
 }
 
 export const Pagination = ({ currentPage, totalPages, setCurrentPage }: PaginationProps) => {
-    const generatePages = () => {
-        const pages: (number | string)[] = [];
-        const siblings = 1;
+    const SIBLING_COUNT = 1;
 
-        const startPage = Math.max(1, currentPage - siblings);
-        const endPage = Math.min(totalPages, currentPage + siblings);
+    const getPaginationRange = () => {
+        const range: (number | string)[] = [];
+        const DOTS = '...';
 
-        const showLeftDots = startPage > 2;
-        const showRightDots = endPage < totalPages - 1;
+        const totalPageNumbersToShow = SIBLING_COUNT * 2 + 5;
 
-        // Handle left side
-        if (showLeftDots) {
-            pages.push(1, "...");
-        } else {
-            for (let i = 1; i < startPage; i++) {
-                pages.push(i);
-            }
+        if (totalPages <= totalPageNumbersToShow) {
+            return [...Array(totalPages).keys()].map(n => n + 1);
         }
 
-        // Add middle pages
-        for (let i = startPage; i <= endPage; i++) {
-            pages.push(i);
+        const leftSiblingIndex = Math.max(currentPage - SIBLING_COUNT, 1);
+        const rightSiblingIndex = Math.min(currentPage + SIBLING_COUNT, totalPages);
+
+        const shouldShowLeftDots = leftSiblingIndex > 2;
+        const shouldShowRightDots = rightSiblingIndex < totalPages - 2;
+
+        const firstPageIndex = 1;
+        const lastPageIndex = totalPages;
+
+        if (!shouldShowLeftDots && shouldShowRightDots) {
+            const leftItemCount = 3 + 2 * SIBLING_COUNT;
+            const leftRange = [...Array(leftItemCount).keys()].map(n => n + 1);
+            return [...leftRange, DOTS, totalPages];
         }
 
-        // Handle right side
-        if (showRightDots) {
-            pages.push("...", totalPages);
-        } else {
-            for (let i = endPage + 1; i <= totalPages; i++) {
-                pages.push(i);
-            }
+        if (shouldShowLeftDots && !shouldShowRightDots) {
+            const rightItemCount = 3 + 2 * SIBLING_COUNT;
+            const rightRange = [...Array(rightItemCount).keys()].map(n => totalPages - rightItemCount + 1 + n);
+            return [firstPageIndex, DOTS, ...rightRange];
         }
 
-        return pages;
+        if (shouldShowLeftDots && shouldShowRightDots) {
+            const middleRange = [...Array(2 * SIBLING_COUNT + 1).keys()].map(n => leftSiblingIndex + n);
+            return [firstPageIndex, DOTS, ...middleRange, DOTS, lastPageIndex];
+        }
     };
 
-    const pages = generatePages();
+    const paginationRange = getPaginationRange();
 
     return (
-        <div className="flex items-center gap-2 mt-4 w-full justify-between">
+        <div className="flex gap-2 items-center mt-10 justify-between w-full">
             <button
-                className="px-4 py-2 rounded-lg bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
                 disabled={currentPage === 1}
+                className="px-3 py-1 border rounded"
             >
-                &lt; Previous
+                Prev
             </button>
 
-            <div className="flex gap-1">
-                {pages.map((page, idx) =>
-                    typeof page === "string" ? (
-                        <span key={idx} className="px-2 py-1">
-                            ...
-                        </span>
-                    ) : (
-                        <button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className={`px-2 py-1 border rounded ${
-                                currentPage === page
-                                    ? "bg-blue-500 text-white border-blue-500"
-                                    : "hover:bg-gray-100"
-                            }`}
-                        >
-                            {page}
-                        </button>
-                    )
-                )}
+            <div className="space-x-4">
+                {paginationRange?.map((page, idx) => (
+                    <button
+                        key={idx}
+                        disabled={page === '...'}
+                        onClick={() => typeof page === "number" && setCurrentPage(page)}
+                        className={`h-10 w-10 border rounded-full ${page === currentPage ? "bg-blue-500 text-white" : ""}`}
+                    >
+                        {page}
+                    </button>
+                ))}
             </div>
 
             <button
-                className="px-4 py-2 rounded-lg bg-gray-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
                 disabled={currentPage === totalPages}
+                className="px-3 py-1 border rounded"
             >
-                Next &gt;
+                Next
             </button>
         </div>
     );

@@ -15,27 +15,33 @@ const Products = () => {
     const { searchInput, selectedCategory, selectedKeyword, minVal, maxVal } = useProducts()
 
     const [products, setProducts] = useState<ProductType[]>([])
-    const [totalProducts, setTotalProducts] = useState<number>(0)
     const [totalPages, setTotalPages] = useState<number>(0)
 
     const [currentPage, setCurrentPage] = useState<number>(1)
 
     const itemsPerPage = 12
-    const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const res = await fetch(`https://dummyjson.com/products?limit=${itemsPerPage}&skip=${(currentPage - 1) * itemsPerPage}`)
+            let url = `https://dummyjson.com/products?limit=${itemsPerPage}&skip=${(currentPage - 1) * itemsPerPage}`
+
+            if (selectedKeyword.length > 0) {
+                const keywordQuery = selectedKeyword.join(" ");
+                url = `https://dummyjson.com/products/search?q=${keywordQuery}`;
+            }
+
+            const res = await fetch(url)
+
             const data = await res.json()
 
             setProducts(data.products)
-            setTotalProducts(data.total)
+            console.log(data)
             setTotalPages(Math.ceil(data.total / itemsPerPage))
         }
 
         fetchProducts()
         console.log(currentPage)
-    }, [currentPage])
+    }, [currentPage, selectedKeyword])
 
     const filteredProducts = products.filter(product => {
         const matchSearch = product.title.toLowerCase().includes(searchInput)
@@ -55,7 +61,7 @@ const Products = () => {
                 filters
             </button> */}
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredProducts.map(product => (
                     <div key={product.title}>
                         <Product thumbnail={product.thumbnail} title={product.title} price={product.price} />
@@ -77,7 +83,7 @@ const Products = () => {
 
 const Product = ({ thumbnail, title, price }: ProductType) => {
     return (
-        <div className="w-60 h-44 border border-neutral-200 shadow-lg rounded">
+        <div className=" w-60 h-44 border border-neutral-200 shadow-lg rounded">
             <img src={thumbnail} alt="productImg" className="h-[60%] m-auto" />
 
             <div className="py-2 px-3 h-2/5">
