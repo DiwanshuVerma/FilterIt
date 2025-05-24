@@ -10,7 +10,6 @@ export const Pagination = ({ currentPage, totalPages, setCurrentPage }: Paginati
     const SIBLING_COUNT = 1;
 
     const getPaginationRange = () => {
-        const range: (number | string)[] = [];
         const DOTS = '...';
 
         const totalPageNumbersToShow = SIBLING_COUNT * 2 + 5;
